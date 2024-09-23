@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>TutorialNinja</groupId>
+  <artifactId>TutorialNinja</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+  <properties>
+    <lombok.version>1.18.34</lombok.version>
+    <extentreports.version>5.1.2</extentreports.version>
+    <testng.version>7.4.0</testng.version>
+    <selenium.version>4.16.1</selenium.version>
+    <poi.version>5.3.0</poi.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>${poi.version}</version>
+    </dependency>
+   <dependency>
+    <groupId>org.apache.maven.surefire</groupId>
+    <artifactId>surefire-testng</artifactId>
+    <version>3.0.0-M7</version>
+</dependency>
+ <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>2.0.0</version> <!-- Use the latest stable version -->
+    </dependency>
+
+   
+    <dependency>
+      <groupId>com.aventstack</groupId>
+      <artifactId>extentreports</artifactId>
+      <version>${extentreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>${testng.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
+      <version>${selenium.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>3.0.0-M7</version> <!-- Use the latest stable version -->
+
+ <!-- You can check for the latest version -->
+        <configuration>
+          <suiteXmlFiles>
+            <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile> <!-- Specify your TestNG suite file here -->
+          </suiteXmlFiles>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
