@@ -18,61 +18,73 @@ import com.aventstack.extentreports.Status;
 import utils.ExtentReport;
 
 public class MyListeners implements ITestListener {
+	
+	ExtentReports report;
+	@Override
+	public void onStart(ITestContext context) {
+		
+		
+			try { 
+				report = ExtentReport.generateExtentReport();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}		//System.out.println("exceution of project started");
+	
 
-    ExtentReports report;
-    ExtentTest currentTest;
+	@Override
+	public void onTestStart(ITestResult result) {
+		
+		 ExtentTest test = report.createTest(result.getName());
+		 test.log(Status.INFO,result.getName()+"started execution");
+		//System.out.println(result.getName()+"is started execution");
+	}
 
-    @Override
-    public void onStart(ITestContext context) {
-        try {
-            report = ExtentReport.generateExtentReport();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	@Override
+	public void onTestSuccess(ITestResult result) {
+		ExtentTest test = report.createTest(result.getName());
+		test.log(Status.PASS, result.getName()+"Sucessfully executed");
+		//System.out.println(result.getName()+"is sucesfully executed");
+	}
 
-    @Override
-    public void onTestStart(ITestResult result) {
-        currentTest = report.createTest(result.getName());
-        currentTest.log(Status.INFO, result.getName() + " started execution");
-    }
+	@Override
+	public void onTestFailure(ITestResult result) {
+		WebDriver driver = null;
+		//to get the access to driver to this block the next line will do
+		try {
+			 driver=(WebDriver) result.getTestClass().getRealClass().getDeclaredField("driver").get(result.getInstance());
+		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		File srcScrrenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+		String dest=System.getProperty("user.dir")+"\\Scrrenshots\\"+result.getTestName()+"\\.png";
+//	try {
+//			FileHandler.copy(srcScrrenshot, dest);
+//		} catch (IOException e) {s
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		System.out.println(result.getThrowable());
+		
+		System.out.println(result.getName()+"is failed");
+		
+	}
 
-    @Override
-    public void onTestSuccess(ITestResult result) {
-        currentTest.log(Status.PASS, result.getName() + " successfully executed");
-    }
+	@Override
+	public void onTestSkipped(ITestResult result) {
+		System.out.println(result.getName()+"is skiiped");
+		System.out.println(result.getThrowable());
+	}
 
-    @Override
-    public void onTestFailure(ITestResult result) {
-        WebDriver driver = null;
-        try {
-            driver = (WebDriver) result.getTestClass().getRealClass().getDeclaredField("driver").get(result.getInstance());
-            File srcScreenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+	
+	@Override
+	public void onFinish(ITestContext context) {
+		System.out.println("execution fineshed");
+		
+	}
+	
+	
 
-            // Ensure the Screenshots directory exists
-            File screenshotDir = new File(System.getProperty("user.dir") + "\\Screenshots\\");
-            if (!screenshotDir.exists()) {
-                screenshotDir.mkdirs();
-            }
-
-            String dest = screenshotDir + "\\" + result.getName() + ".png";
-            FileHandler.copy(srcScreenshot, new File(dest));
-
-            currentTest.addScreenCaptureFromPath(dest);
-            currentTest.log(Status.FAIL, result.getName() + " failed with exception: " + result.getThrowable().getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onTestSkipped(ITestResult result) {
-        currentTest.log(Status.SKIP, result.getName() + " is skipped due to: " + result.getThrowable());
-    }
-
-    @Override
-    public void onFinish(ITestContext context) {
-        report.flush();
-        System.out.println("Execution finished");
-    }
 }
